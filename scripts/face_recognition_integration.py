@@ -138,11 +138,13 @@ def run_face_recognition(id_jadwal: int, id_matkul: int, dosen, stop_event: thre
                         absen_data = AbsenCreate(
                             id_mahasiswa=nrp,
                             status="hadir",
+                            id_jadwal=id_jadwal,
+                            id_matkul=id_matkul,
                             detection_duration=int(duration)
                         )
                         db = SessionLocal()
                         try:
-                            absen_service.create_absen(db, absen_data, id_matkul, id_jadwal)
+                            absen_service.create_absen(db, absen_data)
                             absensi_sent.add(nrp)
                             print(f"Absensi terkirim untuk nrp {nrp} setelah terdeteksi selama {int(duration)} detik.")
                         except Exception as e:

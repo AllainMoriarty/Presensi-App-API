@@ -18,7 +18,9 @@ def close_session(id_jadwal: int):
 def is_session_open(id_jadwal: int) -> bool:
     return SESSION_STATUS.get(id_jadwal, False)
 
-def create_absen(db: Session, absen_data: AbsenCreate, id_matkul: int, id_jadwal: int) -> Absen:
+def create_absen(db: Session, absen_data: AbsenCreate) -> Absen:
+    id_jadwal = absen_data.id_jadwal
+    id_matkul = absen_data.id_matkul
     # Validasi agar sesi terbuka
     if not is_session_open(id_jadwal):
         raise HTTPException(status_code=403, detail="Sesi absensi tidak dibuka.")

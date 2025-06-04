@@ -4,20 +4,20 @@ from typing import Optional, List
 class KelasBase(BaseModel):
     kode_kelas: str = Field(..., max_length=10)
     nama_kelas: str = Field(..., max_length=100)
+    mahasiswa: Optional[List[int]] = None
+    matakuliah: Optional[List[int]] = None
 
 class KelasCreate(KelasBase):
-    mahasiswa: Optional[List[int]] = []
-    matakuliah: Optional[List[int]] = []
+    pass
 
-class KelasUpdate(KelasBase):
-    mahasiswa: Optional[List[int]] = []
-    matakuliah: Optional[List[int]] = []
+class KelasUpdate(BaseModel):
+    kode_kelas: Optional[str] = None
+    nama_kelas: Optional[str] = None
+    mahasiswa: Optional[List[int]] = None
+    matakuliah: Optional[List[int]] = None
 
 class KelasResponse(KelasBase):
-    id_kelas: int
-    kode_kelas: str
-    mahasiswa: Optional[List[int]]
-    matakuliah: Optional[List[int]]
+    id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

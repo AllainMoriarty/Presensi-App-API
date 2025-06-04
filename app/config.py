@@ -4,8 +4,14 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 
 from app.database import SessionLocal  # ambil dari file baru
-from app.services.auth_service import SECRET_KEY, ALGORITHM
+from app.services.auth_service import ALGORITHM
 from app.models.user import User  # ini sekarang aman
+import os
+from dotenv import load_dotenv
+
+load_dotenv('.env')
+
+secret_key = os.getenv("SECRET_KEY")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -23,7 +29,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
         user_email: int = payload.get("sub")
         if user_email is None:
             raise credentials_exception

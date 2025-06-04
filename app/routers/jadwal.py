@@ -7,10 +7,10 @@ from app.schemas.jadwal import JadwalBase, JadwalCreate, JadwalUpdate, JadwalRes
 from app.routers import absen
 from typing import List
 
-router = APIRouter(tags=["Jadwal"])
+router = APIRouter(prefix="/jadwal", tags=["Jadwal"])
 
 @router.post("/", response_model=JadwalResponse)
-def create_jadwal(jadwal: JadwalCreate, kode_kelas: str = Path(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_jadwal(jadwal: JadwalCreate, kode_kelas: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role != "dosen":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
     
@@ -21,7 +21,5 @@ def get_jadwal_by_id(id_jadwal: int = Path(...), db: Session = Depends(get_db), 
     return jadwal_service.get_jadwal_by_id(db, id_jadwal)
 
 @router.get("/", response_model=List[JadwalResponse])
-def get_jadwal_by_kelas(kode_kelas: str = Path(...), db: Session = Depends(get_db)):
+def get_jadwal_by_kelas(kode_kelas: str, db: Session = Depends(get_db)):
     return jadwal_service.get_jadwal_by_kelas(db, kode_kelas)
-
-router.include_router(absen.router, prefix="/{id_jadwal}/absen")

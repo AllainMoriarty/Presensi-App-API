@@ -73,4 +73,3 @@ def delete_matkul(
     
     return {"message": "Mata kuliah berhasil dihapus"}
 
-router.include_router(kelas.router, prefix="/{id_matkul}/kelas")

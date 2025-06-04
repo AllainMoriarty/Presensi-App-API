@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
+from typing import Optional
 
 class JadwalBase(BaseModel):
     week: int
@@ -9,7 +10,8 @@ class JadwalCreate(JadwalBase):
     pass
 
 class JadwalUpdate(JadwalBase):
-    pass
+    week: Optional[int] = None
+    tanggal: Optional[date] = None
 
 class JadwalResponse(JadwalBase):
     id_jadwal: int

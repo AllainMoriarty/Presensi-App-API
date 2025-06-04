@@ -6,21 +6,14 @@ from app.schemas.kelas import KelasBase, KelasCreate, KelasUpdate, KelasResponse
 from typing import List, Optional
 
 def create_kelas(db: Session, kelas: KelasCreate) -> dict:
-    # Buat instance kelas dengan data dasar
     new_kelas = Kelas(kode_kelas=kelas.kode_kelas, nama_kelas=kelas.nama_kelas)
     
-    # Menambahkan data relasi mahasiswa jika disediakan
     if kelas.mahasiswa:
-        # Ambil objek User berdasarkan nrp yang diberikan
         mahasiswa_list = db.query(User).filter(User.nrp.in_(kelas.mahasiswa)).all()
-        # Tambahkan objek-objek mahasiswa ke relationship kelas
         new_kelas.mahasiswa.extend(mahasiswa_list)
     
-    # Menambahkan data relasi matakuliah jika disediakan
     if kelas.matakuliah:
-        # Ambil objek Matakuliah berdasarkan id_matkul yang diberikan
         matakuliah_list = db.query(Matakuliah).filter(Matakuliah.id_matkul.in_(kelas.matakuliah)).all()
-        # Tambahkan objek-objek matakuliah ke relationship kelas
         new_kelas.matakuliah.extend(matakuliah_list)
     
     db.add(new_kelas)
@@ -62,14 +55,12 @@ def get_kelas_by_kode(db: Session, kode_kelas: str) -> Optional[dict]:
     }
 
 def get_kelas_by_matkul(db: Session, id_matkul: int) -> List[dict]:
-    # Lakukan join ke relationship 'matakuliah' kemudian filter berdasarkan id_matkul
     kelas_list = (
         db.query(Kelas)
         .join(Kelas.matakuliah)
         .filter(Matakuliah.id_matkul == id_matkul)
         .all()
     )
-    # Lakukan transformasi manual agar sesuai dengan schema jika diperlukan
     return [
         {
             "id_kelas": k.id_kelas,
