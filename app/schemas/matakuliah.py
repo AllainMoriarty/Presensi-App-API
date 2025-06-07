@@ -14,7 +14,7 @@ class MatakuliahUpdate(MatakuliahBase):
 
 class MatakuliahResponse(MatakuliahBase):
     id_matkul: int
-    id_dosen: Optional[int]
+    id_dosen: Optional[int] = None
     #kelas: List[KelasResponse] = []
 
     class Config:

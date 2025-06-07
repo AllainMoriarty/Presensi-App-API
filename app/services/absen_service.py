@@ -1,19 +1,29 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.absen import Absen
 from app.schemas.absen import AbsenCreate
 from typing import List
 from fastapi import HTTPException
 from app.models.kelas import Kelas
 from app.models.jadwal import Jadwal
+from app.models.user import User
 
 # Global dictionary untuk status sesi absensi; key = id_jadwal, value = bool (True jika open)
 SESSION_STATUS = {}
+FACE_RECOGNITION_STOP_EVENTS = {}
 
 def open_session(id_jadwal: int):
     SESSION_STATUS[id_jadwal] = True
 
 def close_session(id_jadwal: int):
+    # 1. Ubah status sesi
     SESSION_STATUS[id_jadwal] = False
+    
+    # 2. Hentikan background task jika ada
+    stop_event = FACE_RECOGNITION_STOP_EVENTS.get(id_jadwal)
+    if stop_event:
+        print(f"Mengirim sinyal stop untuk background task id_jadwal: {id_jadwal}")
+        stop_event.set() # Ini yang akan menghentikan loop di face_recognition.py
+        del FACE_RECOGNITION_STOP_EVENTS[id_jadwal] # Hapus dari dictionary
 
 def is_session_open(id_jadwal: int) -> bool:
     return SESSION_STATUS.get(id_jadwal, False)
@@ -91,3 +101,15 @@ def delete_absen(db: Session, id_absen: int) -> bool:
     db.delete(absen_record)
     db.commit()
     return True
+
+def get_absen_by_jadwal(db: Session, id_jadwal: int) -> list[Absen]:
+    """
+    Mengambil semua data absensi untuk id_jadwal tertentu,
+    sekaligus memuat data mahasiswa yang bersangkutan (JOIN).
+    """
+    return (
+        db.query(Absen)
+        .options(joinedload(Absen.mahasiswa))
+        .filter(Absen.id_jadwal == id_jadwal)
+        .all()
+    )

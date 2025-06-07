@@ -17,7 +17,7 @@ class KelasUpdate(BaseModel):
     matakuliah: Optional[List[int]] = None
 
 class KelasResponse(KelasBase):
-    id: int
+    id_kelas: int
 
     class Config:
         from_attributes = True

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import List, Optional
 from app.models.matakuliah import Matakuliah
 from app.schemas.matakuliah import MatakuliahCreate, MatakuliahUpdate
 from typing import List, Optional
@@ -16,7 +17,7 @@ def get_all_matakuliah(db: Session) -> List[Matakuliah]:
 def get_matakuliah_by_id(db: Session, id_matkul: int) -> Optional[Matakuliah]:
     return db.query(Matakuliah).filter(Matakuliah.id_matkul == id_matkul).first()
 
-def get_matakuliah_by_dosen(db: Session, id_dosen: int) -> Optional[Matakuliah]:
+def get_matakuliah_by_dosen(db: Session, id_dosen: int) -> List[Matakuliah]:
     return db.query(Matakuliah).filter(Matakuliah.id_dosen == id_dosen).all()
 
 def update_matakuliah(db: Session, id_matkul: int, matkul: MatakuliahUpdate, id_dosen: int) -> Optional[Matakuliah]:

@@ -26,5 +26,8 @@ class User(Base):
         ),
     )
 
+    # Relasi balik ke Matakuliah (seorang dosen punya banyak mata kuliah)
+    matakuliah = relationship("Matakuliah", back_populates="dosen") # <-- TAMBAHKAN BARIS INI
+
     # Many-to-many dengan Kelas (mahasiswa)
     kelas = relationship("Kelas", secondary="kelas_mahasiswa", back_populates="mahasiswa")
