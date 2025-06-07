@@ -26,6 +26,18 @@ def get_all_matkul(
 ):
     return matakuliah_service.get_all_matakuliah(db)
 
+@router.get("/dosen", response_model=List[MatakuliahResponse])
+def get_matkul_by_dosen(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != 'dosen':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+    
+    matkuls = matakuliah_service.get_matakuliah_by_dosen(db, current_user.nip)
+
+    if not matkuls:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tidak ada mata kuliah ditemukan")
+    
+    return matkuls
+
 @router.get("/{id_matkul}", response_model=MatakuliahResponse)
 def get_matkul_by_id(
     id_matkul: int,
@@ -34,12 +46,6 @@ def get_matkul_by_id(
     matkul = matakuliah_service.get_matakuliah_by_id(db, id_matkul)
     if not matkul:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Mata kuliah tidak ditemukan")
-    
-    return matkul
-
-@router.get("/dosen", response_model=List[MatakuliahResponse])
-def get_matkul_by_dosen(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    matkul = matakuliah_service.get_matakuliah_by_dosen(db, current_user.nip)
     
     return matkul
 
