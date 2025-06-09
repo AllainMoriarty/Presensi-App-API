@@ -40,3 +40,7 @@ class AbsenResponse(AbsenBase):
 
     class Config:
         from_attributes = True
+
+class VerificationRequest(BaseModel):
+    id_jadwal: int
+    id_matkul: int

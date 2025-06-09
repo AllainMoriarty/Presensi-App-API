@@ -5,7 +5,7 @@ from app.schemas.absen import AbsenCreate, AbsenResponse
 from app.services import absen_service
 from app.config import get_db, get_current_user
 from app.models.user import User
-from scripts import face_recognition_integration 
+# from scripts import face_recognition_integration 
 
 router = APIRouter(prefix="/mahasiswa", tags=["Mahasiswa"])
 
